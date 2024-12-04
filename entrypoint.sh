@@ -5,6 +5,7 @@ cd /root
 # Set tool versions 
 MLNXTOOLVER=23.07-1.el9
 MFTTOOLVER=4.30.0-139
+MLXUPVER=4.30.0
 
 # Set architecture
 ARCH=`uname -m`
@@ -22,7 +23,7 @@ wget https://www.mellanox.com/downloads/MFT/mft-$MFTTOOLVER-$ARCH-rpm.tgz
 if [ "$ARCH" == "x86_64" ]; then export ARCH="x64"; fi
 
 # Pull and place mlxup binary
-wget https://www.mellanox.com/downloads/firmware/mlxup/4.30.0/SFX/linux_$ARCH/mlxup
+wget https://www.mellanox.com/downloads/firmware/mlxup/$MLXUPVER/SFX/linux_$ARCH/mlxup
 mv mlxup /usr/local/bin
 chmod +x /usr/local/bin/mlxup
 
