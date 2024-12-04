@@ -1,0 +1,23 @@
+# Start from UBI9 image
+FROM registry.access.redhat.com/ubi9/ubi:9.5-1730489303
+
+# Set work directory
+WORKDIR /root
+
+# Copy in required rpm packages
+#COPY oracle-cloud-agent-1.45.0-2.el8.x86_64.rpm /root/oracle-cloud-agent-1.45.0-2.el8.x86_64.rpm
+#COPY mft-4.29.0-131-x86_64-rpm.tgz /root/mft-4.29.0-131-x86_64-rpm.tgz
+#COPY mlnx-tools-23.07-1.el9.noarch.rpm /root/mlnx-tools-23.07-1.el9.noarch.rpm
+
+# DNF install packages either from repo or locally
+RUN dnf install sudo procps-ng pciutils yum jq iputils ethtool net-tools -y
+
+
+# Cleanup 
+WORKDIR /root
+RUN dnf clean all
+
+# Run container entrypoint
+COPY entrypoint.sh /root/entrypoint.sh
+ENTRYPOINT ["/bin/bash", "/root/entrypoint.sh"]
+CMD ["there"]
