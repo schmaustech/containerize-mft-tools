@@ -12,11 +12,19 @@ ARCH=`uname -m`
 # Pull mlnx-tools from EPEL
 wget https://dl.fedoraproject.org/pub/epel/9/Everything/$ARCH/Packages/m/mlnx-tools-$MLNXTOOLVER.noarch.rpm
 
-# Arm architecture fixup 
+# Arm architecture fixup for mft-tools
 if [ "$ARCH" == "aarch64" ]; then export ARCH="arm64"; fi
 
 # Pull mft-tools
 wget https://www.mellanox.com/downloads/MFT/mft-$MFTTOOLVER-$ARCH-rpm.tgz
+
+# x86 fixup for mlxup binary
+if [ "$ARCH" == "x86_64" ]; then export ARCH="x64"; fi
+
+# Pull and place mlxup binary
+wget https://www.mellanox.com/downloads/firmware/mlxup/4.30.0/SFX/linux_$ARCH/mlxup
+mv mlxup /usr/local/bin
+chmod +x /usr/local/bin/mlxup
 
 # Install mlnx-tools into container
 dnf install mlnx-tools-$MLNXTOOLVER.noarch.rpm
