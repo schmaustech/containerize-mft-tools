@@ -16,8 +16,9 @@ The following is a list of the available tools in MFT, together with a brief des
 | **Component**   | **Description/Function                                                                                                                               |
 |-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
 | mst             | * Starts/stops the register access driver Lists the available mst devices                                                                            |
-|                 | * Lists the available mst devices
-| mlxburn         | * Generation of a standard or customized NVIDIA firmware image for burning (in binary or .mlx format)
+|                 | * Lists the available mst devices                                                                                                                    |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| mlxburn         | * Generation of a standard or customized NVIDIA firmware image for burning (.bin or .mlx),
 mst
 	This tool provides the following functions:
     * Starts/stops the register access driver
