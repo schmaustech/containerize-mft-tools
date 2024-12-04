@@ -1,21 +1,29 @@
 #!/bin/bash
+# Set working directory
 cd /root
 
-## get architecture 
+# Set tool versions 
+MLNXTOOLVER=23.07-1.el9
+MFTTOOLVER=4.30.0-139
 
-## determine which MFT to download
+# Set architecture
+ARCH=`uname -m`
 
-https://www.mellanox.com/downloads/MFT/mft-4.30.0-139-arm64-rpm.tgz
-https://www.mellanox.com/downloads/MFT/mft-4.30.0-139-x86_64-rpm.tgz
+# Pull mlnx-tools from EPEL
+wget https://dl.fedoraproject.org/pub/epel/9/Everything/$ARCH/Packages/m/mlnx-tools-$MLNXTOOLVER.noarch.rpm
 
-https://dl.fedoraproject.org/pub/epel/9/Everything/aarch64/Packages/m/mlnx-tools-23.07-1.el9.noarch.rpm
-https://dl.fedoraproject.org/pub/epel/9/Everything/x86_64/Packages/m/mlnx-tools-23.07-1.el9.noarch.rpm
+# Arm architecture fixup 
+if [ "$ARCH" == "aarch64" ]; then export ARCH="arm64"; fi
 
-dnf install MLNXTOOLS
+# Pull mft-tools
+wget https://www.mellanox.com/downloads/MFT/mft-$MFTTOOLVER-$ARCH-rpm.tgz
 
+# Install mlnx-tools into container
+dnf install mlnx-tools-$MLNXTOOLVER.noarch.rpm
 
-tar -xzf MFTTOOLS 
-cd /root/mft-*
+# Install mft-tools into container
+tar -xzf mft-$MFTTOOLVER-$ARCH-rpm.tgz 
+cd /root/mft-$MFTTOOLVER-$ARCH-rpm
 ./install.sh --without-kernel
 
 sleep infinity & wait
