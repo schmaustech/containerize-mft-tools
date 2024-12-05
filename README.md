@@ -3,6 +3,7 @@
 Containerization of the NVIDIA MFT Tooling
 
 **Goal**: The goal of this document is to make the NVIDIA MFT Tooling containerized to allow for firmware settings and firmware updates.
+
 **Future Goal**: Pass variables as a CR to set firmware versions, auto update, update and/or just report 
 
 ## NVIDIA MFT Tooling, Mlnx Tools and Mlxup
