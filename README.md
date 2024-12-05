@@ -3,8 +3,9 @@
 Containerization of the NVIDIA MFT Tooling
 
 **Goal**: The goal of this document is to make the NVIDIA MFT Tooling containerized to allow for firmware settings and firmware updates.
+**Future Goal**: Pass variables as a CR to set firmware versions, auto update, update and/or just report 
 
-## NVIDIA MFT Tooling
+## NVIDIA MFT Tooling, Mlnx Tools and Mlxup
 
 The MFT package is a set of firmware management tools used to:
 
@@ -19,22 +20,19 @@ The following is a list of the available tools in MFT, together with a brief des
 | mlxburn         | Generation of a standard or customized NVIDIA firmware image for burning (.bin or .mlx)to the Flash/EEPROM attached to a NVIDIA HCA or switch device |
 | flint           | This tool burns/query a firmware binary image or an expansion ROM image to the Flash device of a NVIDIA network adapter/gateway/switch device        |
 | debug utilities | A set of debug utilities (e.g., itrace, fwtrace, mlxtrace, mlxdump, mstdump, mlxmcg, wqdump, mcra, mlxi2c, i2c, mget_temp, and pckt_drop)            |
+| mlxup           | The utility enables discovery of available NVIDIA adapters and indicates whether firmware update is required for each adapter                        |
+| mlnx-tools      | Mellanox userland tools and scripts                                                                                                                  |
+
+Sources:
+[Mlnx-tools Repo](https://github.com/Mellanox/mlnx-tools)
+[MFT Tools](https://network.nvidia.com/products/adapter-software/firmware-tools/)
+[Mlxup](https://network.nvidia.com/support/firmware/mlxup-mft/)
 
 ## Workflow Sections
 
-- [Requirements](#requirements)
 - [Building The Container](#building-the-container)
 - [Running The Container](#running-the-container)
 - [Validate The Container](#validate-the-container)
-
-## Requirements
-
-To build the NVIDIA MFT Tooling in a container we will obtain the following componets during container runtime on a UBI9 container as we do not want to ship these in our container.
-
-| **Component**                                  | **Description**                                                                                                                                      |
-|------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **mlnx-tools-23.07-1.el9.noarch.rpm**          | Mellanox userland tools and scripts [repo here](https://github.com/Mellanox/mlnx-tools)                                                              |
-| **mft-4.29.0-131-x86_64-rpm.tgz**              | NVIDIA Firmware Tools (MFT) available [here](https://network.nvidia.com/products/adapter-software/firmware-tools/)                                   |
 
 ## Building The Container
 
