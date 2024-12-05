@@ -1,5 +1,5 @@
 #!/bin/bash
-# Set working directory
+# Set working dir
 cd /root
 
 # Set tool versions 
@@ -19,14 +19,6 @@ if [ "$ARCH" == "aarch64" ]; then export ARCH="arm64"; fi
 # Pull mft-tools
 wget https://www.mellanox.com/downloads/MFT/mft-$MFTTOOLVER-$ARCH-rpm.tgz
 
-# x86 fixup for mlxup binary
-if [ "$ARCH" == "x86_64" ]; then export ARCH="x64"; fi
-
-# Pull and place mlxup binary
-wget https://www.mellanox.com/downloads/firmware/mlxup/$MLXUPVER/SFX/linux_$ARCH/mlxup
-mv mlxup /usr/local/bin
-chmod +x /usr/local/bin/mlxup
-
 # Install mlnx-tools into container
 dnf install mlnx-tools-$MLNXTOOLVER.noarch.rpm
 
@@ -34,5 +26,16 @@ dnf install mlnx-tools-$MLNXTOOLVER.noarch.rpm
 tar -xzf mft-$MFTTOOLVER-$ARCH-rpm.tgz 
 cd /root/mft-$MFTTOOLVER-$ARCH-rpm
 ./install.sh --without-kernel
+
+# Change back to root workdir
+cd /root
+
+# x86 fixup for mlxup binary
+if [ "$ARCH" == "x86_64" ]; then export ARCH="x64"; fi
+
+# Pull and place mlxup binary
+wget https://www.mellanox.com/downloads/firmware/mlxup/$MLXUPVER/SFX/linux_$ARCH/mlxup
+mv mlxup /usr/local/bin
+chmod +x /usr/local/bin/mlxup
 
 sleep infinity & wait
