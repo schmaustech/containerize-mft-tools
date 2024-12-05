@@ -9,8 +9,9 @@ Containerization of the NVIDIA MFT Tooling
 
 The MFT package is a set of firmware management tools used to:
 
-* Generate a standard or customized NVIDIA firmware image Querying for firmware information
+* Generate a standard or customized NVIDIA firmware image querying for firmware information
 * Burn a firmware image
+* Make configuration changes to the firmware settings
 
 The following is a list of the available tools in MFT, together with a brief description of what each tool performs. 
 
@@ -39,131 +40,33 @@ Sources:
 To build the container run the `podman build` command on a Red Hat Enterprise Linux 9.x system using the Dockerfile.mft provided in this repository.
 
 ~~~bash
-podman build . -f Dockerfile.mft -t quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.1
+$ podman build . -f Dockerfile.mft -t quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.5
 STEP 1/7: FROM registry.access.redhat.com/ubi9/ubi:9.5-1730489303
 STEP 2/7: WORKDIR /root
 --> Using cache 49bf31146abb4da08e705c0b93dc670e6fc8e36d60ffdbb1948dd6e1d7f79642
 --> 49bf31146abb
 STEP 3/7: RUN dnf install wget procps-ng pciutils yum jq iputils ethtool net-tools -y
-Updating Subscription Management repositories.
-subscription-manager is operating in container mode.
-Red Hat Enterprise Linux 9 for x86_64 - BaseOS  8.8 MB/s |  38 MB     00:04    
-Red Hat Enterprise Linux 9 for x86_64 - AppStre 9.7 MB/s |  46 MB     00:04    
-Red Hat Universal Base Image 9 (RPMs) - BaseOS  1.0 MB/s | 525 kB     00:00    
-Red Hat Universal Base Image 9 (RPMs) - AppStre 5.5 MB/s | 2.3 MB     00:00    
-Red Hat Universal Base Image 9 (RPMs) - CodeRea 1.7 MB/s | 281 kB     00:00    
-Package yum-4.14.0-17.el9.noarch is already installed.
-Dependencies resolved.
-===================================================================================================
- Package                   Arch    Version                  Repository                         Size
-===================================================================================================
-Installing:
- ethtool                   x86_64  2:6.2-1.el9              rhel-9-for-x86_64-baseos-rpms     234 k
- iputils                   x86_64  20210202-9.el9           rhel-9-for-x86_64-baseos-rpms     178 k
- jq                        x86_64  1.6-17.el9               rhel-9-for-x86_64-baseos-rpms     190 k
- net-tools                 x86_64  2.0-0.64.20160912git.el9 rhel-9-for-x86_64-baseos-rpms     312 k
- pciutils                  x86_64  3.7.0-5.el9              rhel-9-for-x86_64-baseos-rpms      96 k
- procps-ng                 x86_64  3.3.17-14.el9            rhel-9-for-x86_64-baseos-rpms     353 k
- wget                      x86_64  1.21.1-8.el9_4           rhel-9-for-x86_64-appstream-rpms  789 k
-Installing dependencies:
- hwdata                    noarch  0.348-9.15.el9           rhel-9-for-x86_64-baseos-rpms     1.6 M
- libpsl                    x86_64  0.21.1-5.el9             rhel-9-for-x86_64-baseos-rpms      66 k
- oniguruma                 x86_64  6.9.6-1.el9.6            rhel-9-for-x86_64-baseos-rpms     221 k
- pciutils-libs             x86_64  3.7.0-5.el9              rhel-9-for-x86_64-baseos-rpms      43 k
- publicsuffix-list-dafsa   noarch  20210518-3.el9           rhel-9-for-x86_64-baseos-rpms      59 k
-
-Transaction Summary
-===================================================================================================
-Install  12 Packages
-
-Total download size: 4.1 M
-Installed size: 17 M
-Downloading Packages:
-(1/12): pciutils-libs-3.7.0-5.el9.x86_64.rpm    180 kB/s |  43 kB     00:00    
-(2/12): libpsl-0.21.1-5.el9.x86_64.rpm          266 kB/s |  66 kB     00:00    
-(3/12): pciutils-3.7.0-5.el9.x86_64.rpm         309 kB/s |  96 kB     00:00    
-(4/12): ethtool-6.2-1.el9.x86_64.rpm            1.8 MB/s | 234 kB     00:00    
-(5/12): publicsuffix-list-dafsa-20210518-3.el9. 388 kB/s |  59 kB     00:00    
-(6/12): iputils-20210202-9.el9.x86_64.rpm       1.6 MB/s | 178 kB     00:00    
-(7/12): procps-ng-3.3.17-14.el9.x86_64.rpm      3.6 MB/s | 353 kB     00:00    
-(8/12): jq-1.6-17.el9.x86_64.rpm                2.3 MB/s | 190 kB     00:00    
-(9/12): oniguruma-6.9.6-1.el9.6.x86_64.rpm      2.1 MB/s | 221 kB     00:00    
-(10/12): net-tools-2.0-0.64.20160912git.el9.x86 1.9 MB/s | 312 kB     00:00    
-(11/12): hwdata-0.348-9.15.el9.noarch.rpm       4.9 MB/s | 1.6 MB     00:00    
-(12/12): wget-1.21.1-8.el9_4.x86_64.rpm         3.9 MB/s | 789 kB     00:00    
---------------------------------------------------------------------------------
-Total                                           5.1 MB/s | 4.1 MB     00:00     
-Running transaction check
-Transaction check succeeded.
-Running transaction test
-Transaction test succeeded.
-Running transaction
-  Preparing        :                                                        1/1 
-  Installing       : oniguruma-6.9.6-1.el9.6.x86_64                        1/12 
-  Installing       : hwdata-0.348-9.15.el9.noarch                          2/12 
-  Installing       : publicsuffix-list-dafsa-20210518-3.el9.noarch         3/12 
-  Installing       : libpsl-0.21.1-5.el9.x86_64                            4/12 
-  Installing       : pciutils-libs-3.7.0-5.el9.x86_64                      5/12 
-  Installing       : pciutils-3.7.0-5.el9.x86_64                           6/12 
-  Installing       : wget-1.21.1-8.el9_4.x86_64                            7/12 
-  Installing       : jq-1.6-17.el9.x86_64                                  8/12 
-  Installing       : net-tools-2.0-0.64.20160912git.el9.x86_64             9/12 
-  Running scriptlet: net-tools-2.0-0.64.20160912git.el9.x86_64             9/12 
-  Installing       : procps-ng-3.3.17-14.el9.x86_64                       10/12 
-  Installing       : iputils-20210202-9.el9.x86_64                        11/12 
-  Running scriptlet: iputils-20210202-9.el9.x86_64                        11/12 
-  Installing       : ethtool-2:6.2-1.el9.x86_64                           12/12 
-  Running scriptlet: ethtool-2:6.2-1.el9.x86_64                           12/12 
-  Verifying        : libpsl-0.21.1-5.el9.x86_64                            1/12 
-  Verifying        : pciutils-3.7.0-5.el9.x86_64                           2/12 
-  Verifying        : pciutils-libs-3.7.0-5.el9.x86_64                      3/12 
-  Verifying        : publicsuffix-list-dafsa-20210518-3.el9.noarch         4/12 
-  Verifying        : ethtool-2:6.2-1.el9.x86_64                            5/12 
-  Verifying        : iputils-20210202-9.el9.x86_64                         6/12 
-  Verifying        : procps-ng-3.3.17-14.el9.x86_64                        7/12 
-  Verifying        : hwdata-0.348-9.15.el9.noarch                          8/12 
-  Verifying        : jq-1.6-17.el9.x86_64                                  9/12 
-  Verifying        : net-tools-2.0-0.64.20160912git.el9.x86_64            10/12 
-  Verifying        : oniguruma-6.9.6-1.el9.6.x86_64                       11/12 
-  Verifying        : wget-1.21.1-8.el9_4.x86_64                           12/12 
-Installed products updated.
-
-Installed:
-  ethtool-2:6.2-1.el9.x86_64                                                    
-  hwdata-0.348-9.15.el9.noarch                                                  
-  iputils-20210202-9.el9.x86_64                                                 
-  jq-1.6-17.el9.x86_64                                                          
-  libpsl-0.21.1-5.el9.x86_64                                                    
-  net-tools-2.0-0.64.20160912git.el9.x86_64                                     
-  oniguruma-6.9.6-1.el9.6.x86_64                                                
-  pciutils-3.7.0-5.el9.x86_64                                                   
-  pciutils-libs-3.7.0-5.el9.x86_64                                              
-  procps-ng-3.3.17-14.el9.x86_64                                                
-  publicsuffix-list-dafsa-20210518-3.el9.noarch                                 
-  wget-1.21.1-8.el9_4.x86_64                                                    
-
-Complete!
+--> Using cache 108b7547a2ae1b421293e9fc4ed560f6c72f0cc9fa9af18330746db3e0bae249
 --> 108b7547a2ae
 STEP 4/7: WORKDIR /root
+--> Using cache 7e959df27b7d83fb538fa30692f65be71f4d9aba1f047a9ffc9e1a494c9494f6
 --> 7e959df27b7d
 STEP 5/7: RUN dnf clean all
-Updating Subscription Management repositories.
-subscription-manager is operating in container mode.
-43 files removed
+--> Using cache 5cc0bd064f9962b137bc8760e05b4fd8b37b8351977bcba81bd8c8ae96f6cc47
 --> 5cc0bd064f99
 STEP 6/7: COPY entrypoint.sh /root/entrypoint.sh
---> fa3771b64203
+--> 654d0d4366d4
 STEP 7/7: ENTRYPOINT ["/bin/bash", "/root/entrypoint.sh"]
-COMMIT quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.1
---> 60f8507c11c7
-Successfully tagged quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.1
-60f8507c11c71d004cfba5f4c463a87bb133237a520902153806527a707ecf16
+COMMIT quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.5
+--> 2e4ea2bd5249
+Successfully tagged quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.5
+2e4ea2bd524964fdb958f79d3bfb37b203a3a9a24490ecf01969caf4c43aa61d
 ~~~
 
 Once the image has been built push the image up to the registry that the Openshift cluster can access.
 
 ~~~bash
-# podman push quay.io/redhat_emp1/ecosys-nvidia/oracle-oci:1.5.0
+$ podman push quay.io/redhat_emp1/ecosys-nvidia/oracle-oci:1.5.0
 
 Writing manifest to image destination
 ~~~
