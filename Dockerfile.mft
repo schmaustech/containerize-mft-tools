@@ -1,11 +1,16 @@
 # Start from UBI9 image
-FROM registry.access.redhat.com/ubi9/ubi:9.5-1730489303
+FROM registry.access.redhat.com/ubi9/ubi:latest
 
 # Set work directory
-WORKDIR /root
+RUN mkdir -p /root/mft/rpms
+WORKDIR /root/mft
+
+# Copy in packages not available in UBI repo
+COPY ./rpms/*.rpm /root/rpms/
 
 # DNF install packages either from repo or locally
-RUN dnf install wget procps-ng pciutils yum jq iputils ethtool net-tools -y
+RUN dnf install `ls -1 /root/rpms/*.rpm` -y 
+RUN dnf install wget procps-ng pciutils yum jq iputils ethtool net-tools kmod systemd-udev -y
 
 # Cleanup 
 WORKDIR /root
@@ -14,4 +19,3 @@ RUN dnf clean all
 # Run container entrypoint
 COPY entrypoint.sh /root/entrypoint.sh
 ENTRYPOINT ["/bin/bash", "/root/entrypoint.sh"]
-#CMD ["there"]
