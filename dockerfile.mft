@@ -9,8 +9,7 @@ WORKDIR /root/mft
 COPY ./rpms/*.rpm /root/rpms/
 
 # DNF install packages either from repo or locally
-RUN dnf install `ls -1 /root/rpms/*.rpm` -y 
-RUN dnf install wget procps-ng pciutils yum jq iputils ethtool net-tools kmod systemd-udev -y
+RUN dnf install wget procps-ng pciutils yum jq iputils ethtool net-tools kmod systemd-udev rpm-build gcc make -y
 
 # Cleanup 
 WORKDIR /root
