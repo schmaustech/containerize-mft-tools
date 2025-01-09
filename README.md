@@ -41,7 +41,7 @@ Sources:
 To build the container run the `podman build` command on a Red Hat Enterprise Linux 9.x system using the Dockerfile.mft provided in this repository.
 
 ~~~bash
-$ podman build . -f dockerfile.mft -t quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.5
+$ podman build . -f dockerfile.mft -t quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.6
 STEP 1/7: FROM registry.access.redhat.com/ubi9/ubi:9.5-1730489303
 STEP 2/7: WORKDIR /root
 --> Using cache 49bf31146abb4da08e705c0b93dc670e6fc8e36d60ffdbb1948dd6e1d7f79642
@@ -67,8 +67,17 @@ Successfully tagged quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.5
 Once the image has been built push the image up to the registry that the Openshift cluster can access.
 
 ~~~bash
-$ podman push quay.io/redhat_emp1/ecosys-nvidia/oracle-oci:1.5.0
-
+$ podman push quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.6
+Getting image source signatures
+Copying blob d8810e1d2ef8 done   | 
+Copying blob 74204cac9645 done   | 
+Copying blob 5cdad0ae4288 done   | 
+Copying blob 1ed0dfb3bdae done   | 
+Copying blob 46d996e78ee4 done   | 
+Copying blob bc7dc8a07a5e done   | 
+Copying blob 8f03b1222e06 done   | 
+Copying blob 549895f8a771 done   | 
+Copying config 6193a5efc8 done   | 
 Writing manifest to image destination
 ~~~
 
@@ -121,7 +130,7 @@ spec:
   hostNetwork: true
   serviceAccountName: mfttool
   containers:
-  - image: quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.5
+  - image: quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.6
     name: mfttool-pod-nvd-srv-29
     securityContext:
       privileged: true
