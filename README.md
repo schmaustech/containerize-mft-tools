@@ -368,3 +368,164 @@ MST devices:
 
 sh-5.1#
 ~~~
+
+One of the things we can do with this container is query the devices and their settings with `mlxconfig`.  We can also change those settings like when we need to change a port from ethernet mode to infiniband mode.
+
+~~~bash
+mlxconfig -d /dev/mst/mt4129_pciconf0 query
+
+Device #1:
+----------
+
+Device type:        ConnectX7           
+Name:               MCX715105AS-WEAT_Ax 
+Description:        NVIDIA ConnectX-7 HHHL Adapter Card; 400GbE (default mode) / NDR IB; Single-port QSFP112; Port Split Capable; PCIe 5.0 x16 with x16 PCIe extension option; Crypto Disabled; Secure Boot Enabled
+Device:             /dev/mst/mt4129_pciconf0
+
+Configurations:                                          Next Boot
+        MODULE_SPLIT_M0                             Array[0..15]        
+        MEMIC_BAR_SIZE                              0                   
+        MEMIC_SIZE_LIMIT                            _256KB(1)           
+       (...)
+        ADVANCED_PCI_SETTINGS                       False(0)            
+        SAFE_MODE_THRESHOLD                         10                  
+        SAFE_MODE_ENABLE                            True(1)
+~~~
+
+Another tool in the container is `flint` which allows us to see the firmware, product version and PSID for the device.  This is useful for preparing for a firmware update.
+
+~~~bash
+flint -d /dev/mst/mt4129_pciconf0 query
+Image type:            FS4
+FW Version:            28.42.1000
+FW Release Date:       8.8.2024
+Product Version:       28.42.1000
+Rom Info:              type=UEFI version=14.35.15 cpu=AMD64,AARCH64
+                       type=PXE version=3.7.500 cpu=AMD64
+Description:           UID                GuidsNumber
+Base GUID:             e09d730300126474        16
+Base MAC:              e09d73126474            16
+Image VSD:             N/A
+Device VSD:            N/A
+PSID:                  MT_0000001244
+Security Attributes:   secure-fw
+~~~
+
+Another tool in the container is `mlxup` which is an automated way to update the firmware.  When we run `mlxup` it queries all devices on the system and reports back the current firmware and what available firmware there is for the device.  We can then decide to update the cards or skip for now.  In the example below I have two single port CX-7 cards in the node my pod is running on and I will upgrade their firmware.
+
+~~~bash
+$ mlxup
+Querying Mellanox devices firmware ...
+
+Device #1:
+----------
+
+  Device Type:      ConnectX7
+  Part Number:      MCX715105AS-WEAT_Ax
+  Description:      NVIDIA ConnectX-7 HHHL Adapter Card; 400GbE (default mode) / NDR IB; Single-port QSFP112; Port Split Capable; PCIe 5.0 x16 with x16 PCIe extension option; Crypto Disabled; Secure Boot Enabled
+  PSID:             MT_0000001244
+  PCI Device Name:  /dev/mst/mt4129_pciconf1
+  Base MAC:         e09d73125fc4
+  Versions:         Current        Available     
+     FW             28.42.1000     28.43.1014    
+     PXE            3.7.0500       N/A           
+     UEFI           14.35.0015     N/A           
+
+  Status:           Update required
+
+Device #2:
+----------
+
+  Device Type:      ConnectX7
+  Part Number:      MCX715105AS-WEAT_Ax
+  Description:      NVIDIA ConnectX-7 HHHL Adapter Card; 400GbE (default mode) / NDR IB; Single-port QSFP112; Port Split Capable; PCIe 5.0 x16 with x16 PCIe extension option; Crypto Disabled; Secure Boot Enabled
+  PSID:             MT_0000001244
+  PCI Device Name:  /dev/mst/mt4129_pciconf0
+  Base MAC:         e09d73126474
+  Versions:         Current        Available     
+     FW             28.42.1000     28.43.1014    
+     PXE            3.7.0500       N/A           
+     UEFI           14.35.0015     N/A           
+
+  Status:           Update required
+
+---------
+Found 2 device(s) requiring firmware update...
+
+Perform FW update? [y/N]: y
+Device #1: Updating FW ...     
+FSMST_INITIALIZE -   OK          
+Writing Boot image component -   OK          
+Done
+Device #2: Updating FW ...     
+FSMST_INITIALIZE -   OK          
+Writing Boot image component -   OK          
+Done
+
+Restart needed for updates to take effect.
+Log File: /tmp/mlxup_workdir/mlxup-20250109_190606_17886.log
+~~~
+
+Notice the firmware upgrade completed but we need to restart the cards for the changes to take effect.  We can use the `mlxfwreset` command to do this and then validate with the `flint` command that the card is running the new firmware.
+
+~~~bash
+sh-5.1# mlxfwreset -d /dev/mst/mt4129_pciconf0 reset -y
+
+The reset level for device, /dev/mst/mt4129_pciconf0 is:
+
+3: Driver restart and PCI reset
+Continue with reset?[y/N] y
+-I- Sending Reset Command To Fw             -Done
+-I- Stopping Driver                         -Done
+-I- Resetting PCI                           -Done
+-I- Starting Driver                         -Done
+-I- Restarting MST                          -Done
+-I- FW was loaded successfully.
+
+sh-5.1# flint -d /dev/mst/mt4129_pciconf0 query
+Image type:            FS4
+FW Version:            28.43.1014
+FW Release Date:       7.11.2024
+Product Version:       28.43.1014
+Rom Info:              type=UEFI version=14.36.16 cpu=AMD64,AARCH64
+                       type=PXE version=3.7.500 cpu=AMD64
+Description:           UID                GuidsNumber
+Base GUID:             e09d730300126474        16
+Base MAC:              e09d73126474            16
+Image VSD:             N/A
+Device VSD:            N/A
+PSID:                  MT_0000001244
+Security Attributes:   secure-fw
+~~~
+
+We can repeat the same steps on the second card in the system to complete the firmware update. 
+
+~~~bash
+sh-5.1# mlxfwreset -d /dev/mst/mt4129_pciconf1 reset -y
+
+The reset level for device, /dev/mst/mt4129_pciconf1 is:
+
+3: Driver restart and PCI reset
+Continue with reset?[y/N] y
+-I- Sending Reset Command To Fw             -Done
+-I- Stopping Driver                         -Done
+-I- Resetting PCI                           -Done
+-I- Starting Driver                         -Done
+-I- Restarting MST                          -Done
+-I- FW was loaded successfully.
+
+sh-5.1# flint -d /dev/mst/mt4129_pciconf1 query
+Image type:            FS4
+FW Version:            28.43.1014
+FW Release Date:       7.11.2024
+Product Version:       28.43.1014
+Rom Info:              type=UEFI version=14.36.16 cpu=AMD64,AARCH64
+                       type=PXE version=3.7.500 cpu=AMD64
+Description:           UID                GuidsNumber
+Base GUID:             e09d730300125fc4        16
+Base MAC:              e09d73125fc4            16
+Image VSD:             N/A
+Device VSD:            N/A
+PSID:                  MT_0000001244
+Security Attributes:   secure-fw
+~~~
