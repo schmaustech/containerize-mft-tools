@@ -109,30 +109,30 @@ clusterrole.rbac.authorization.k8s.io/system:openshift:scc:privileged added: "mf
 Next we will create a pod yaml for each of our baremetal nodes that will run under the mfttool namespace and leverage the MFT tooling.
 
 ~~~bash
-$ cat <<EOF > mfttool-pod-nvd-srv-32.yaml
+$ cat <<EOF > mfttool-pod-nvd-srv-29.yaml
 apiVersion: v1
 kind: Pod
 metadata:
-  name: mfttool-pod-nvd-srv-32
+  name: mfttool-pod-nvd-srv-29
   namespace: mfttool
 spec:
   nodeSelector: 
-    kubernetes.io/hostname: nvd-srv-32.nvidia.eng.rdu2.dc.redhat.com
+    kubernetes.io/hostname: nvd-srv-29.nvidia.eng.rdu2.dc.redhat.com
   hostNetwork: true
   serviceAccountName: mfttool
   containers:
-  - image: quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.1
-    name: mfttool-pod-nvd-srv-32
+  - image: quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.5
+    name: mfttool-pod-nvd-srv-29
     securityContext:
       privileged: true
 EOF
 ~~~
 
-Once the customer resource file has been generated, create the resource on the cluster.mfttool-pod-nvd-srv-32
+Once the custom resource file has been generated, create the resource on the cluster.
 
 ~~~bash
-oc create -f mfttool-pod-nvd-srv-32.yaml
-pod/mfttool-pod-nvd-srv-32 created
+oc create -f mfttool-pod-nvd-srv-29.yaml
+pod/mfttool-pod-nvd-srv-29 created
 ~~~
 
 Validate that the pod is up and running.
@@ -140,5 +140,14 @@ Validate that the pod is up and running.
 ~~~bash
 $ oc get pods -n mfttool
 NAME                     READY   STATUS    RESTARTS   AGE
-mfttool-pod-nvd-srv-32   1/1     Running   0          28s
+mfttool-pod-nvd-srv-29   1/1     Running   0          28s
+~~~
+
+~~~bash
+$ oc rsh -n mfttool mfttool-pod-nvd-srv-29 
+sh-5.1#
+~~~
+
+~~~bash
+
 ~~~
