@@ -41,7 +41,7 @@ Sources:
 To build the container run the `podman build` command on a Red Hat Enterprise Linux 9.x system using the Dockerfile.mft provided in this repository.
 
 ~~~bash
-$ podman build . -f Dockerfile.mft -t quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.5
+$ podman build . -f dockerfile.mft -t quay.io/redhat_emp1/ecosys-nvidia/mfttools:0.0.5
 STEP 1/7: FROM registry.access.redhat.com/ubi9/ubi:9.5-1730489303
 STEP 2/7: WORKDIR /root
 --> Using cache 49bf31146abb4da08e705c0b93dc670e6fc8e36d60ffdbb1948dd6e1d7f79642
