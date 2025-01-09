@@ -22,10 +22,16 @@ wget https://www.mellanox.com/downloads/MFT/mft-$MFTTOOLVER-$ARCH-rpm.tgz
 # Install mlnx-tools into container
 dnf install mlnx-tools-$MLNXTOOLVER.noarch.rpm
 
+# Install kernel-devel package supplied in container
+rpm -ivh /root/rpms/kernel-devel-*.rpm --nodeps
+mkdir /lib/modules/$(uname -r)/
+ln -s /usr/src/kernels/$(uname -r) /lib/modules/$(uname -r)/build
+
 # Install mft-tools into container
 tar -xzf mft-$MFTTOOLVER-$ARCH-rpm.tgz 
 cd /root/mft-$MFTTOOLVER-$ARCH-rpm
-./install.sh --without-kernel
+#./install.sh --without-kernel
+./install.sh 
 
 # Change back to root workdir
 cd /root
