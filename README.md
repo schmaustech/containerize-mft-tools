@@ -529,3 +529,5 @@ Device VSD:            N/A
 PSID:                  MT_0000001244
 Security Attributes:   secure-fw
 ~~~
+
+Once the firmware update has been completed and validate we can remove the container.
