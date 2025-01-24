@@ -117,10 +117,10 @@ if [ "$ARCH" == "aarch64" ]; then export ARCH="arm64"; fi
 wget https://www.mellanox.com/downloads/MFT/mft-$MFTTOOLVER-$ARCH-rpm.tgz
 
 # Install mlnx-tools into container
-dnf install mlnx-tools-$MLNXTOOLVER.noarch.rpm
+dnf install mlnx-tools-$MLNXTOOLVER.noarch.rpm -y
 
 # Install kernel-devel package supplied in container
-rpm -ivh /root/rpms/kernel-devel-*.rpm --nodeps
+rpm -ivh /root/rpms/kernel-*.rpm --nodeps
 mkdir /lib/modules/$(uname -r)/
 ln -s /usr/src/kernels/$(uname -r) /lib/modules/$(uname -r)/build
 
