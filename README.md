@@ -128,7 +128,8 @@ ln -s /usr/src/kernels/$(uname -r) /lib/modules/$(uname -r)/build
 tar -xzf mft-$MFTTOOLVER-$ARCH-rpm.tgz 
 cd /root/mft-$MFTTOOLVER-$ARCH-rpm
 ./install.sh --without-kernel
-#./install.sh 
+#./install.sh
+mst start
 
 # Change back to root workdir
 cd /root
